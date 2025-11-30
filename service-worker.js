@@ -1,9 +1,9 @@
-const CACHE_NAME = 'bauer-eyecare-v1';
+const CACHE_NAME = 'bauer-eyecare-v2';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/index.tsx',
-  '/manifest.json'
+  '/manifest.json',
+  '/icon.png'
 ];
 
 self.addEventListener('install', (event) => {
