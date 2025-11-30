@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, CheckCircle, AlertCircle, Send, Loader2, X, Plus } from 'lucide-react';
-import { analyzeInsuranceCard } from './geminiService';
-import { InsuranceData } from './types';
+import { analyzeInsuranceCard } from '../services/geminiService';
+import { InsuranceData } from '../types';
 
 const InsuranceUploader: React.FC = () => {
   const [images, setImages] = useState<string[]>([]);
@@ -14,8 +14,6 @@ const InsuranceUploader: React.FC = () => {
       const files = Array.from(e.target.files);
       setIsAnalyzing(true);
       setError(null);
-      // We don't nullify data immediately to allow adding more images without losing progress
-      // but if starting fresh scan, might want to reset. For now, let's reset to ensure clean state.
       setData(null);
 
       try {
@@ -26,29 +24,23 @@ const InsuranceUploader: React.FC = () => {
         }));
 
         const newImages = await Promise.all(filePromises);
+        // Append new images to existing ones
         const updatedImages = [...images, ...newImages];
         setImages(updatedImages);
 
-        // Prepare raw base64 strings
+        // Prepare raw base64 strings for API (strip data:image/...;base64,)
         const rawBase64s = updatedImages.map(img => img.split(',')[1]);
 
-        try {
-            const jsonString = await analyzeInsuranceCard(rawBase64s);
-            if (jsonString) {
-               const parsedData = JSON.parse(jsonString) as InsuranceData;
-               setData(parsedData);
-            } else {
-               throw new Error("No data");
-            }
-        } catch (aiError) {
-            console.warn("AI Analysis failed, falling back to manual entry", aiError);
-            // Fallback: Allow manual entry if AI fails or Key is missing
-            setError("Could not auto-scan card. Please enter details manually below.");
-            setData({ carrier: '', memberId: '', groupNumber: '', holderName: '' });
+        const jsonString = await analyzeInsuranceCard(rawBase64s);
+        if (jsonString) {
+           const parsedData = JSON.parse(jsonString) as InsuranceData;
+           setData(parsedData);
+        } else {
+           throw new Error("No data returned");
         }
-
       } catch (err) {
-        setError("Error processing images. Please try again.");
+        setError("Could not analyze the cards. Please ensure images are clear and try again.");
+        console.error(err);
       } finally {
         setIsAnalyzing(false);
       }
@@ -79,6 +71,7 @@ const InsuranceUploader: React.FC = () => {
     window.location.href = `mailto:info@bauereyecare.com?subject=${subject}&body=${body}`;
   };
 
+  // Helper to handle keyboard activation of file inputs
   const handleLabelKeyDown = (e: React.KeyboardEvent, inputId: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -102,7 +95,7 @@ const InsuranceUploader: React.FC = () => {
           )}
         </div>
         <p className="text-slate-600 mb-6">
-          Upload clear photos of your insurance card (Front & Back).
+          Upload clear photos of your insurance card (Front & Back). Our AI will extract the details.
         </p>
 
         {/* Image Grid */}
@@ -113,6 +106,7 @@ const InsuranceUploader: React.FC = () => {
                 <img src={img} alt={`Uploaded insurance card ${idx + 1}`} className="w-full h-full object-contain" />
               </div>
             ))}
+            {/* Add more button */}
             <label 
               htmlFor="add-more-upload"
               className="flex flex-col items-center justify-center aspect-video border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500"
@@ -135,7 +129,7 @@ const InsuranceUploader: React.FC = () => {
           </div>
         )}
 
-        {/* Initial Upload Area */}
+        {/* Initial Upload Area - Only show if no images */}
         {images.length === 0 && (
           <div className="mb-8">
             <label 
@@ -171,22 +165,20 @@ const InsuranceUploader: React.FC = () => {
           </div>
         )}
 
-        {/* Error/Manual Entry State */}
+        {/* Error State */}
         {error && (
-          <div className="flex items-center gap-3 p-4 bg-amber-50 text-amber-700 rounded-xl mb-4" role="alert">
+          <div className="flex items-center gap-3 p-4 bg-red-50 text-red-700 rounded-xl mb-4" role="alert">
             <AlertCircle aria-hidden="true" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Form - Shows if data was found OR if fallback triggered */}
+        {/* Results Form */}
         {data && !isAnalyzing && (
           <div className="space-y-4 animate-fade-in border-t border-slate-100 pt-6">
             <div className="flex items-center gap-2 text-emerald-600 mb-4" role="status">
               <CheckCircle className="w-5 h-5" aria-hidden="true" />
-              <span className="font-medium">
-                {error ? "Enter Details Manually" : "Details Extracted Successfully"}
-              </span>
+              <span className="font-medium">Details Extracted Successfully</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
