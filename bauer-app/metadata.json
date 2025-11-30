@@ -1,8 +1,0 @@
-{
-  "name": "Bauer Eyecare App",
-  "description": "A patient-friendly portal for Bauer Eyecare to streamline appointments, payments, orders, and inquiries.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ]
-}
