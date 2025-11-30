@@ -33,18 +33,18 @@ const InsuranceUploader: React.FC = () => {
         const rawBase64s = updatedImages.map(img => img.split(',')[1]);
 
         try {
-          const jsonString = await analyzeInsuranceCard(rawBase64s);
-          if (jsonString) {
-            const parsedData = JSON.parse(jsonString) as InsuranceData;
-            setData(parsedData);
-          } else {
-            throw new Error("No data");
-          }
+            const jsonString = await analyzeInsuranceCard(rawBase64s);
+            if (jsonString) {
+               const parsedData = JSON.parse(jsonString) as InsuranceData;
+               setData(parsedData);
+            } else {
+               throw new Error("No data");
+            }
         } catch (aiError) {
-          console.warn("AI Analysis failed, falling back to manual entry", aiError);
-          // Fallback: Allow manual entry if AI fails or Key is missing
-          setError("Could not auto-scan card. Please enter details manually below.");
-          setData({ carrier: '', memberId: '', groupNumber: '', holderName: '' });
+            console.warn("AI Analysis failed, falling back to manual entry", aiError);
+            // Fallback: Allow manual entry if AI fails or Key is missing
+            setError("Could not auto-scan card. Please enter details manually below.");
+            setData({ carrier: '', memberId: '', groupNumber: '', holderName: '' });
         }
 
       } catch (err) {
@@ -63,7 +63,7 @@ const InsuranceUploader: React.FC = () => {
 
   const handleSendEmail = () => {
     if (!data) return;
-
+    
     const subject = encodeURIComponent("Insurance Card Submission");
     const body = encodeURIComponent(`
       New Insurance Card Submission:
@@ -75,7 +75,7 @@ const InsuranceUploader: React.FC = () => {
       
       (Please see attached images if sent via separate email client feature)
     `);
-
+    
     window.location.href = `mailto:info@bauereyecare.com?subject=${subject}&body=${body}`;
   };
 
@@ -92,8 +92,8 @@ const InsuranceUploader: React.FC = () => {
         <div className="flex justify-between items-start mb-2">
           <h2 className="text-2xl font-bold text-slate-900">Upload Insurance Card</h2>
           {images.length > 0 && (
-            <button
-              onClick={clearImages}
+            <button 
+              onClick={clearImages} 
               className="text-sm text-red-500 hover:text-red-600 font-medium focus:outline-none focus:ring-2 focus:ring-red-500 rounded"
               aria-label="Clear all uploaded images"
             >
@@ -113,7 +113,7 @@ const InsuranceUploader: React.FC = () => {
                 <img src={img} alt={`Uploaded insurance card ${idx + 1}`} className="w-full h-full object-contain" />
               </div>
             ))}
-            <label
+            <label 
               htmlFor="add-more-upload"
               className="flex flex-col items-center justify-center aspect-video border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500"
               tabIndex={0}
@@ -121,16 +121,16 @@ const InsuranceUploader: React.FC = () => {
               role="button"
               aria-label="Upload another insurance card image"
             >
-              <Plus className="w-8 h-8 text-slate-400" aria-hidden="true" />
-              <span className="text-xs text-slate-500 mt-1">Add another</span>
-              <input
-                id="add-more-upload"
-                type="file"
-                className="sr-only"
-                accept="image/*"
-                multiple
-                onChange={handleFileChange}
-              />
+               <Plus className="w-8 h-8 text-slate-400" aria-hidden="true" />
+               <span className="text-xs text-slate-500 mt-1">Add another</span>
+               <input 
+                 id="add-more-upload"
+                 type="file" 
+                 className="sr-only" 
+                 accept="image/*" 
+                 multiple 
+                 onChange={handleFileChange} 
+               />
             </label>
           </div>
         )}
@@ -138,7 +138,7 @@ const InsuranceUploader: React.FC = () => {
         {/* Initial Upload Area */}
         {images.length === 0 && (
           <div className="mb-8">
-            <label
+            <label 
               htmlFor="initial-upload"
               className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500"
               tabIndex={0}
@@ -151,13 +151,13 @@ const InsuranceUploader: React.FC = () => {
                 <p className="mb-2 text-sm text-slate-500"><span className="font-semibold">Click to upload</span></p>
                 <p className="text-xs text-slate-500">Front & Back (Max 5MB)</p>
               </div>
-              <input
+              <input 
                 id="initial-upload"
-                type="file"
-                className="sr-only"
-                accept="image/*"
-                multiple
-                onChange={handleFileChange}
+                type="file" 
+                className="sr-only" 
+                accept="image/*" 
+                multiple 
+                onChange={handleFileChange} 
               />
             </label>
           </div>
@@ -192,48 +192,48 @@ const InsuranceUploader: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label htmlFor="carrier" className="text-xs font-semibold text-slate-500 uppercase">Insurance Carrier</label>
-                <input
+                <input 
                   id="carrier"
-                  type="text"
-                  value={data.carrier || ''}
-                  onChange={(e) => setData({ ...data, carrier: e.target.value })}
-                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  type="text" 
+                  value={data.carrier || ''} 
+                  onChange={(e) => setData({...data, carrier: e.target.value})}
+                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
                 />
               </div>
               <div className="space-y-1">
                 <label htmlFor="memberId" className="text-xs font-semibold text-slate-500 uppercase">Member ID</label>
-                <input
+                <input 
                   id="memberId"
-                  type="text"
-                  value={data.memberId || ''}
-                  onChange={(e) => setData({ ...data, memberId: e.target.value })}
-                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  type="text" 
+                  value={data.memberId || ''} 
+                  onChange={(e) => setData({...data, memberId: e.target.value})}
+                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
                 />
               </div>
               <div className="space-y-1">
                 <label htmlFor="groupNumber" className="text-xs font-semibold text-slate-500 uppercase">Group Number</label>
-                <input
+                <input 
                   id="groupNumber"
-                  type="text"
-                  value={data.groupNumber || ''}
-                  onChange={(e) => setData({ ...data, groupNumber: e.target.value })}
-                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  type="text" 
+                  value={data.groupNumber || ''} 
+                  onChange={(e) => setData({...data, groupNumber: e.target.value})}
+                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
                 />
               </div>
               <div className="space-y-1">
                 <label htmlFor="holderName" className="text-xs font-semibold text-slate-500 uppercase">Primary Holder Name</label>
-                <input
+                <input 
                   id="holderName"
-                  type="text"
-                  value={data.holderName || ''}
-                  onChange={(e) => setData({ ...data, holderName: e.target.value })}
-                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  type="text" 
+                  value={data.holderName || ''} 
+                  onChange={(e) => setData({...data, holderName: e.target.value})}
+                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
                 />
               </div>
             </div>
 
             <div className="pt-6">
-              <button
+              <button 
                 onClick={handleSendEmail}
                 className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 focus:outline-none"
               >
