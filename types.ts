@@ -5,6 +5,7 @@ export enum ViewState {
   INSURANCE = 'INSURANCE',
   INVOICE = 'INVOICE',
   TRACKER = 'TRACKER',
+  CONTACT = 'CONTACT',
 }
 
 export interface NavItem {
