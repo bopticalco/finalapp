@@ -4,6 +4,7 @@ import Dashboard from './Dashboard';
 import InsuranceUploader from './InsuranceUploader';
 import RequestInvoice from './RequestInvoice';
 import OrderTracker from './OrderTracker';
+import ContactOptions from './ContactOptions';
 import { ViewState } from './types';
 
 const App: React.FC = () => {
@@ -19,6 +20,8 @@ const App: React.FC = () => {
         return <RequestInvoice />;
       case ViewState.TRACKER:
         return <OrderTracker />;
+      case ViewState.CONTACT:
+        return <ContactOptions />;
       default:
         return <Dashboard setView={setCurrentView} />;
     }
