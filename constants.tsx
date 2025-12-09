@@ -10,7 +10,8 @@ export const EXTERNAL_LINKS = {
   TRACKING: 'https://www.bauereyecare.com/eyeglasses',
   MAPS: 'https://www.google.com/maps/dir/?api=1&destination=3625+Star+Ranch+Rd,+Colorado+Springs,+CO+80906',
   MEDS_EMAIL: 'mailto:info@bauereyecare.com?subject=Medication%2FAuthorization%20Request&body=Please%20fill%20in%20the%20following%3A%0D%0A%0D%0AName%3A%20%0D%0ADate%20of%20Birth%3A%20%0D%0AMedication%20Refill%3A%0D%0AMedication%20Authorization%3A%0D%0APharmacy%20Location%3A',
-  PHONE: 'tel:7193943939'
+  PHONE: 'tel:7193943939',
+  SMS: 'sms:7193943939'
 };
 
 // Unified background style for all icons (Green Squircle)
@@ -158,11 +159,11 @@ export const MENU_ITEMS = [
     shadow: UNIFIED_SHADOW,
   },
   {
-    title: 'Call Office',
-    description: 'Talk to Us',
+    title: 'Contact Office',
+    description: 'Call or Text',
     icon: Phone,
-    link: EXTERNAL_LINKS.PHONE,
-    external: true,
+    view: ViewState.CONTACT, // Changed to internal view
+    external: false,
     gradient: UNIFIED_GRADIENT,
     iconColor: 'text-indigo-600 fill-indigo-50', // Indigo phone
     shadow: UNIFIED_SHADOW,
